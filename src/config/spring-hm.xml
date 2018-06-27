@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost/phone_shop?characterEncoding=utf-8"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="1234567890"></property>
+	</bean>
+	<!-- 整合mybatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 关联数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 扫描mapper包中的xml 和配置文件 -->
+		<property name="mapperLocations" value="classpath:cn/hm/mapper/*.xml"></property>
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+	</bean>
+	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	         <property name="basePackage" value="cn/hm/dao"></property>
+	         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	    </bean>
+	<!-- 事务管理管理器 -->
+	    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	    	<property name="dataSource" ref="dataSource"></property>
+	    </bean>
+	    <!-- 声明式事务  引用上面定义的事务管理器-->
+	    <tx:annotation-driven transaction-manager="txManager"/>
+	    <!-- 加载日志文件等配置文件 -->
+	    <bean id="" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	         <property name="locations">
+	         	<list>
+	         		<value>classpath:config/log4j.properties</value>
+	         	</list>
+	         </property>
+	    </bean>
+	    
+</beans>	 
